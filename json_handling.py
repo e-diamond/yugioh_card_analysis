@@ -1,19 +1,27 @@
 import json
 
-def readJSONfromurl(url):
-    import requests
+class JSON:
 
-    # ping url
-    response = requests.get(url)
+    @staticmethod
+    def readFromURL(url):
+        import requests
 
-    return json.loads(response.text)
+        response = requests.get(url)
+        return json.loads(response.text)
 
+    @staticmethod
+    def readFromFile(filename):
 
-def readJSONfromfile(filename):
+        file = open(filename, "r")
+        data = file.read()
+        file.close()
 
-    # open and read file
-    file = open(filename, "r")
-    data = file.read()
-    file.close()
+        return json.loads(data)
 
-    return json.loads(data)
+    @classmethod
+    def url2File(cls, url, filename):
+        data = cls.readFromURL(url)
+
+        file = open(filename, "w")
+        json.dump(data, file)
+        file.close()

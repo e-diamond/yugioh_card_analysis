@@ -1,11 +1,26 @@
 from json_handling import *
 from cardsets import Set
+import matplotlib.pyplot as plt
 
-# get data from api
-cardsets = readJSONfromurl("https://db.ygoprodeck.com/api/v7/cardsets.php")
-cards = readJSONfromurl("https://db.ygoprodeck.com/api/v7/cardinfo.php")["data"]
-# cardsets = readJSONfromfile("cardsets.json")
-# cards = readJSONfromfile("cardinfo.json")["data"]
+
+cardsets_filename = "cardsets.json"
+cards_filename = "cardinfo.json"
+
+# ask if user wants to update storage files
+update = input("Would you like to update storage files? (y/n) ")
+
+# update storage files
+if update == "y" or update == "Y":
+    print("Updating files...")
+
+    JSON.url2File("https://db.ygoprodeck.com/api/v7/cardsets.php", cardsets_filename)
+    JSON.url2File("https://db.ygoprodeck.com/api/v7/cardinfo.php", cards_filename)
+
+    print("Files updated!")
+
+# read data from local files
+cardsets = JSON.readFromFile(cardsets_filename)
+cards = JSON.readFromFile(cards_filename)["data"]
 
 # remove sets with no tcg release date
 cardsets = [set for set in cardsets if "tcg_date" in set]
