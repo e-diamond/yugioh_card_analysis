@@ -1,9 +1,10 @@
+from datetime import date
 
 class Set:
 
-    def __init__(self, name, date):
+    def __init__(self, name, tcg_date):
         self.name = name
-        self.date = date
+        self.tcg_date = date.fromisoformat(tcg_date)
         self.card_count = 0
         self.character_rt = 0
 

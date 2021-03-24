@@ -69,6 +69,12 @@ def avNameLength():
     # return averages
     return [set.getAverageLength() for set in new_card_sets]
 
-
+# get variable arrays
 averages = avNameLength()
-print(averages)
+dates = [set.tcg_date for set in cardsets if (not set.isReprintOnly())]
+
+# display scatter plot 
+plt.scatter(dates, averages)
+plt.xlabel("Sets")
+plt.ylabel("Mean characters in name")
+plt.show()
