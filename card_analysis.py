@@ -7,34 +7,9 @@ import matplotlib.pyplot as plt
 cardsets_filename = "cardsets.json"
 cards_filename = "cardinfo.json"
 
-# ask if user wants to update storage files
-update = input("Would you like to update storage files? (y/n) ")
-
-# update storage files
-if update == "y" or update == "Y":
-    print("Updating files...")
-
+def updateLocalFiles():
     JSON.url2File("https://db.ygoprodeck.com/api/v7/cardsets.php", cardsets_filename)
     JSON.url2File("https://db.ygoprodeck.com/api/v7/cardinfo.php", cards_filename)
-
-    print("Files updated!")
-
-# read data from local files
-cardsets = JSON.readFromFile(cardsets_filename)
-cards = JSON.readFromFile(cards_filename)["data"]
-
-# remove sets with no tcg release date
-cardsets = [set for set in cardsets if "tcg_date" in set]
-
-# sort cardsets by date
-cardsets.sort(key=lambda set: set["tcg_date"])
-
-# change cardsets to object array
-cardsets = [Set(set["set_name"], set["tcg_date"]) for set in cardsets]
-
-# remove cards with no release set and remove tokens
-cards = [card for card in cards if ("card_sets" in card and card["type"] != "Token")]
-
 
 # find the index of the first set each card is printed in
 def getFirstSet(sets_printed):
@@ -68,6 +43,30 @@ def avNameLength():
 
     # return averages
     return [set.getAverageLength() for set in new_card_sets]
+
+"""START"""
+# ask if user wants to update storage files
+update = input("Would you like to update storage files? (y/n) ")
+
+# update storage files
+if update == "y" or update == "Y":
+    updateLocalFiles()
+
+# read data from local files
+cardsets = JSON.readFromFile(cardsets_filename)
+cards = JSON.readFromFile(cards_filename)["data"]
+
+# remove sets with no tcg release date
+cardsets = [set for set in cardsets if "tcg_date" in set]
+
+# sort cardsets by date
+cardsets.sort(key=lambda set: set["tcg_date"])
+
+# change cardsets to object array
+cardsets = [Set(set["set_name"], set["tcg_date"]) for set in cardsets]
+
+# remove cards with no release set and remove tokens
+cards = [card for card in cards if ("card_sets" in card and card["type"] != "Token")]
 
 # get variable arrays
 averages = avNameLength()
