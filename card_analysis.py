@@ -1,5 +1,6 @@
 from json_handling import *
 from cardsets import Set
+import numpy as np
 import matplotlib.pyplot as plt
 
 
@@ -50,7 +51,6 @@ def getFirstSet(sets_printed):
     # return none if set not found (no tcg release)
     return None
 
-
 # calculates average name length for each set
 def avNameLength():
 
@@ -73,8 +73,14 @@ def avNameLength():
 averages = avNameLength()
 dates = [set.tcg_date for set in cardsets if (not set.isReprintOnly())]
 
-# display scatter plot 
+# calculate trendline (linear)
+date_deltas = [(date-dates[0]).days for date in dates]
+m, c = np.polyfit(date_deltas, averages, 1)
+print("Rate of name length increase (days): ", m)
+
+# display scatter plot
 plt.scatter(dates, averages)
+plt.plot(dates, m*np.array(date_deltas) + c, "r")
 plt.xlabel("Sets")
 plt.ylabel("Mean characters in name")
 plt.show()
