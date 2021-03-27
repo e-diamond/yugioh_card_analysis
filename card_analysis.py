@@ -72,14 +72,17 @@ cards = [card for card in cards if ("card_sets" in card and card["type"] != "Tok
 averages = avNameLength()
 dates = [set.tcg_date for set in cardsets if (not set.isReprintOnly())]
 
-# calculate trendline (linear)
-date_deltas = [(date-dates[0]).days for date in dates]
-m, c = np.polyfit(date_deltas, averages, 1)
-print("Rate of name length increase (days): ", m)
+def plotData(x, y, xlabel, ylabel, trendline=False):
 
-# display scatter plot
-plt.scatter(dates, averages)
-plt.plot(dates, m*np.array(date_deltas) + c, "r")
-plt.xlabel("Sets")
-plt.ylabel("Mean characters in name")
-plt.show()
+    if trendline:
+        x_deltas = [(xdata - x[0]).days for xdata in x]
+        a, b = np.polyfit(x_deltas, y, 1)
+        print("Rate of increase (days): ", a)
+        plt.plot(x, a*np.array(x_deltas) + b, "r")
+
+    plt.scatter(x, y)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.show()
+
+plotData(dates, averages, "Sets", "Mean length of card name (characters)", True)
