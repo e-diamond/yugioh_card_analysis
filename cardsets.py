@@ -2,6 +2,9 @@ from datetime import date
 
 class Set:
 
+    # keep list of all tcg sets 
+    sets = []
+
     def __init__(self, name, tcg_date):
         self.name = name
         self.tcg_date = date.fromisoformat(tcg_date)
@@ -30,9 +33,15 @@ class Set:
     def isNonEffectOnly(self):
         return self.effect_count == 0
 
+    @classmethod
+    def getNameWeights(cls):
+        card_counts = [set.card_count for set in cls.sets]
+        minimum = min(card_counts)
+        return [count/minimum for count in card_counts]
+
     # initialise set data
-    @staticmethod
-    def initialise(cardsets, cards, noeffect):
+    @classmethod
+    def initialise(cls, cardsets, cards, noeffect):
 
         # remove sets with no tcg release
         cardsets = [set for set in cardsets if "tcg_date" in set]
@@ -59,7 +68,7 @@ class Set:
                     cardsets[index].update(len(card["name"]), len(card["desc"]))
 
         # exclude reprint only sets
-        return [set for set in cardsets if (not set.isReprintOnly())]
+        cls.sets = [set for set in cardsets if (not set.isReprintOnly())]
 
     # find the index of the first set each card is printed in
     @staticmethod
